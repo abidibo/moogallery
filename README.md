@@ -50,8 +50,8 @@ For more demos please visit the moogallery demo page at http://www.abidibo.net/p
 Screenshots
 -----------
 
-![Screenshot](http://github.com/abidibo/moopopup/raw/master/Docs/mg_screenshot1.png)
-![Screenshot](http://github.com/abidibo/moopopup/raw/master/Docs/mg_screenshot2.png)
+![Screenshot](http://github.com/abidibo/moogallery/raw/master/Docs/mg_screenshot1.png)
+![Screenshot](http://github.com/abidibo/moogallery/raw/master/Docs/mg_screenshot2.png)
 
 Links
 -----------------
