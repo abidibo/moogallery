@@ -1,0 +1,78 @@
+.moogallery tr {
+	vertical-align: middle;
+}
+.moogallery td {
+	padding: 5px;
+	border: 1px solid #eee;
+	text-align: center;
+}
+.moogallery_tip {
+	padding: 10px;
+	max-width: 200px;
+	background: #333;
+	color: #fff;
+}
+.moogallery_overlay {
+	background: #000;
+}
+.moogallery_lightbox_container {
+	background: #000;
+	color: #fff;
+	padding: 20px;
+	border: 1px solid #666;
+}
+.moogallery_lightbox_info {
+	text-align: left;
+}
+.moogallery_lightbox_info_title {
+	font-weight: bold;
+	text-align: left;
+}
+.moogallery_lightbox_info_description {
+}
+.moogallery_lightbox_info_credits {
+	font-style: italic;
+}
+.moogallery_nav {
+	margin-top: 10px;
+	position: relative;
+}
+.moogallery_nav_table {
+	margin: auto;
+}
+.moogallery_nav_table td {
+	padding: 5px;
+}
+.moogallery_nav_info {
+	position: absolute;
+	right: 0;
+}
+.moogallery_nav_bullet {
+	width: 8px;
+	height: 8px;
+	-moz-border-radius: 8px;
+	-webkit-border-radius: 8px;
+	-moz-background-clip: padding;
+	-webkit-background-clip: padding;
+	background-clip: padding;
+	border-radius: 8px;
+	float: left;
+	margin-right: 5px;
+	background: #ddd;
+	cursor: pointer;
+}
+.bullet_selected {
+	background: #ffff00 !important;
+	cursor: auto !important;
+}
+.spinner {
+	background: url('../img/spineer.gif') no-repeat center center;
+	width: 20px;
+	height: 20px;
+}
+*[class^=moogallery_lightbox_info_] a:link, *[class^=moogallery_lightbox_info_] a:visited {
+	color: #0b86e5;
+}
+*[class^=moogallery_lightbox_info_] a:hover {
+	color: #fff;
+}
