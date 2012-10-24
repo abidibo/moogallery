@@ -1,6 +1,6 @@
 /*
 ---
-description: moogallery creates an interactive gallery of images. Given the images and thumbs paths and some information, the thumbs are loaded sequentially and inserted in a table structure automatically sized according to the size of the container, then events are added in order to manage tips, lightbox widget (and navigation through images) and show images' meta information.
+description: moogallery creates an interactive gallery of images, videos and audios. Given the thumbs paths and some information, the thumbs are loaded sequentially and inserted in a table structure automatically sized according to the size of the container, then events are added in order to manage tips, lightbox widget (and navigation through media) and show media's meta information. Videos can be hosted on youtube or vimeo, audio files are inserted following html5 specifications. If used with cpoyer's mootools-mobile (https://github.com/cpojer/mootools-mobile) supports swipe gestures on mobile (android, ios) to change media in the lightbox view (activate the support_mobile option).
 
 license: MIT-style
 
@@ -23,22 +23,29 @@ var moogallery = new Class({
 	Implements: [Options, Events],
 	options: {
 		show_bullets: true,
+		support_mobile: false,
 		onComplete: function() {}
 	},
 	/**
-	 * @summary Images gallery user interface.
-	 * @classdesc <p>The class creates an interactive gallery of images.</p>
+	 * @summary Media gallery user interface.
+	 * @classdesc <p>The class creates an interactive gallery of media.</p>
 	 *            <p>The thumb images are loaded sequentially and inserted in a table structure automatically sized according to the size of the container,
-	 *            then events are added in order to manage tips, lightbox widget (and navigation through images) and show images' meta information.</p> 
+	 *            then events are added in order to manage tips, lightbox widget (and navigation through media) and show media's meta information.</p> 
 	 * @constructs moogallery
 	 * @param {String|Element} container the gallery container element or its id attribute
-	 * @param {Array} images_opt the array of objects containing the images properties. Each object has the following properties:
+	 * @param {Array} items_opt the array of objects containing the media properties. Each object has the following properties:
 	 *                           <ul> 
 	 *                             <li>thumb: path to the thumb image</li> 
 	 *                             <li>img: path to the image</li> 
-	 *                             <li>title: image title</li> 
-	 *                             <li>description: image description</li> 
-	 *                             <li>credits: image credits</li> 
+	 *                             <li>youtube: code of the youtube video</li> 
+	 *                             <li>vimeo: code of the vimeo video</li> 
+	 *                             <li>video_width: video width</li> 
+	 *                             <li>video_height: video height</li> 
+	 *                             <li>mpeg: path to mpeg file</li> 
+	 *                             <li>ogg: path to ogg file</li> 
+	 *                             <li>title: media title</li> 
+	 *                             <li>description: media description</li> 
+	 *                             <li>credits: media credits</li> 
 	 *                           </ul> 
 	 * @param {Object} options The class options object
 	 * @param {Function} [options.onComplete=function(){}] A callback to be called when the rendering of the thumb ended
@@ -61,14 +68,21 @@ var moogallery = new Class({
 	 *          }
 	 *     ]);
 	 */
-	initialize: function(container, images_opt, options) {
+	initialize: function(container, items_opt, options) {
 		
 		this.container = typeOf(container)=='element' ? container : $(container);
 		this.container.setStyle('padding', '0');
-		this.images_opt = images_opt;
+		this.items_opt = items_opt;
 		this.setOptions(options);
 
-		this.images = [];
+		this.mobile = this.options.support_mobile && ( Browser.Platform.ios || Browser.Platform.android) ? true : false;
+
+		this.video_base_link = {
+			youtube: 'http://www.youtube.com/embed/',
+			vimeo: 'http://player.vimeo.com/video/'
+		}
+
+		this.items = [];
 		this.thumbs = [];
 
 		this.max_z_index = this.getMaxZindex();
@@ -78,16 +92,16 @@ var moogallery = new Class({
 		this.tr_width = 0;
 		this.container_width = this.container.getCoordinates().width;
 
-		this.addEvent('image_rendered', function(img_opt_index) {
-			if(typeOf(this.images_opt[img_opt_index]) != 'null') {
-				this.renderImage(this.images_opt[img_opt_index]);
+		this.addEvent('item_rendered', function(item_opt_index) {
+			if(typeOf(this.items_opt[item_opt_index]) != 'null') {
+				this.renderItem(this.items_opt[item_opt_index]);
 			}
 			else {
 				this.fireEvent('complete');
 			}
 		});
 
-		this.renderImage(this.images_opt[0]);
+		this.renderItem(this.items_opt[0]);
 	},
 	/**
 	 * @summary Gets the maximum z-index in the document.
@@ -145,22 +159,45 @@ var moogallery = new Class({
 	 * @summary Inserts an image in the table creating a new cell and changing row if necessary
 	 * @memberof ajs.ui.moogallery.prototype
 	 * @method
-	 * @param {Object} img_opt the image options object to show
+	 * @param {Object} item_opt the image options object to show
 	 * @protected
 	 * @return void
 	 */		 
-	renderImage: function(img_opt) {
+	renderItem: function(item_opt) {
 
-		var img = new Image();
 		var thumb = new Image();
-		this.setTip(thumb, img_opt);
-		this.setLightbox(thumb, img_opt);
+		thumb.src = item_opt.thumb;
 
-		img.src = img_opt.img;
-		thumb.src = img_opt.thumb;
+		this.setTip(thumb, item_opt);
+		this.setLightbox(thumb, item_opt);
 
-		this.images.push(img);
 		this.thumbs.push(thumb);
+
+		if(typeOf(item_opt.img) != 'null') {
+			var item = new Image();
+			item.src = item_opt.img;
+		}
+		else if(typeOf(item_opt.youtube) != 'null' || typeOf(item_opt.vimeo) != 'null') {
+			var site = typeOf(item_opt.youtube) != 'null' ? 'youtube' : 'vimeo';
+			var item = new Element('iframe');
+			item.src = this.video_base_link[site] + item_opt[site];
+			item.setProperty('frameborder', '0');
+			item.setProperty('allowfullscreen', '');
+			item.setProperty('width', item_opt.video_width);
+			item.setProperty('height', item_opt.video_height);
+		}
+		else if(typeOf(item_opt.mpeg) != 'null' || typeOf(item_opt.ogg) != null) {
+			var item = new Element('audio', {text: "Your browser does not support the audio element"}).addEvent('click', function(e) { e.stopPropagation(); });
+			item.setProperty('controls', 'controls');
+			['mpeg', 'ogg'].each(function(type) {
+				if(typeOf(item_opt[type]) != 'null') {
+					var src = new Element('source', {src: item_opt[type], type: 'audio/' + type});
+					src.inject(item, 'top');
+				}
+			})
+		}
+
+		this.items.push(item);
 
 		thumb.onload = function() {
 			var td = new Element('td');
@@ -171,7 +208,7 @@ var moogallery = new Class({
 				this.tr = new Element('tr').inject(this.table);
 				td.inject(this.tr);
 			}
-			this.fireEvent('image_rendered', this.images_opt.indexOf(img_opt)+1)
+			this.fireEvent('item_rendered', this.items_opt.indexOf(item_opt)+1)
 		}.bind(this);
 		
 	}.protect(),
@@ -180,14 +217,14 @@ var moogallery = new Class({
 	 * @memberof ajs.ui.moogallery.prototype
 	 * @method
 	 * @param {Element} thumb the thumb image element
-	 * @param {Object} img_opt the image options object to show
+	 * @param {Object} item_opt the image options object to show
 	 * @protected
 	 * @return void
 	 */		 
-	setTip: function(thumb, img_opt) {
+	setTip: function(thumb, item_opt) {
 
 		var tip_container = new Element('div', {'class': 'moogallery_tip'});
-		tip_container.set('html', '<b>' + img_opt.title + '</b>');
+		tip_container.set('html', '<b>' + item_opt.title + '</b>');
 		thumb.addEvents({
 			'mousemove': function(e) {
 				tip_container.setStyles({
@@ -210,14 +247,14 @@ var moogallery = new Class({
 	 * @memberof ajs.ui.moogallery.prototype
 	 * @method
 	 * @param {Element} thumb the thumb image element
-	 * @param {Object} img_opt the image options object to show
+	 * @param {Object} item_opt the image options object to show
 	 * @protected
 	 * @return void
 	 */		 
-	setLightbox: function(thumb, img_opt) {
+	setLightbox: function(thumb, item_opt) {
 
 		thumb.addEvent('click', function() {
-			this.renderOverlay(this.renderLightbox.bind(this, img_opt));
+			this.renderOverlay(this.renderLightbox.bind(this, item_opt));
 		}.bind(this));
 
 	}.protect(),
@@ -253,10 +290,10 @@ var moogallery = new Class({
 	 * @description This methos is public since has to be called in a chain process, but it's not necessary to call it directly
 	 * @memberof ajs.ui.moogallery.prototype
 	 * @method
-	 * @param {Object} img_opt the image options object to show
+	 * @param {Object} item_opt the image options object to show
 	 * @return void
 	 */		 
-	renderLightbox: function(img_opt) {
+	renderLightbox: function(item_opt) {
 
 		this.lightbox_container = new Element('div.moogallery_lightbox_container').setStyles({
 			'visibility': 'hidden',
@@ -267,21 +304,64 @@ var moogallery = new Class({
 
 		this.lightbox_container.inject(document.body);
 
+		// click event
 		this.lightbox_container.addEvent('click', function(e) {
 			if(e.target.get('tag') == 'a') return true;
 			var cont_dim = this.lightbox_container.getCoordinates();
 			if(e.page.x < cont_dim.left + cont_dim.width/2) {
 				if(this.index==0) return false;
-				this.changeImage(this.index - 1);
+				this.changeItem(this.index - 1);
 			}
 			else {
-				if(this.index==this.images.length-1) return false;
-				this.changeImage(this.index + 1);
+				if(this.index==this.items.length-1) return false;
+				this.changeItem(this.index + 1);
+			}
+		}.bind(this));	
+
+		// mouseover shows next prev arrows
+		this.lightbox_container.addEvent('mouseover', function(e) {
+			var cont_dim = this.lightbox_container.getCoordinates();
+			if(e.page.x < cont_dim.left + cont_dim.width/2) {
+				if(this.arrow_next.getStyle('opacity') != '0') {
+					this.arrow_next.fade('hide');
+				}
+				if(this.index==0) return false;
+				this.arrow_prev.fade('in');
+			}
+			else {
+				if(this.arrow_prev.getStyle('opacity') != '0') {
+					this.arrow_prev.fade('hide');
+				}
+				if(this.index==this.items.length-1) return false;
+				this.arrow_next.fade('in');
 			}
 		}.bind(this));
 
-		this.index = this.images_opt.indexOf(img_opt);
+		this.lightbox_container.addEvent('mouseleave', function(e) {
+			this.arrow_next.fade('hide');
+			this.arrow_prev.fade('hide');
+		}.bind(this));
+
+		this.index = this.items_opt.indexOf(item_opt);
 		this.renderLightboxContainer();
+
+		// swipe event
+		if(this.mobile && Browser.Features.Touch) {
+			document.body.addEvent('swipe', function(e) {
+				Element.disableCustomEvents();
+				(function(){
+					Element.enableCustomEvents();
+				}).delay(1000);
+				if(e.direction == 'left') {
+					if(this.index==this.items.length-1) return false;
+					this.changeItem(this.index + 1);
+				}
+				else {
+					if(this.index==0) return false;
+					this.changeItem(this.index - 1);
+				}
+			}.bind(this));
+		}
 
 	},
 	/**
@@ -289,37 +369,37 @@ var moogallery = new Class({
 	 * @description This methos is public since has to be called in a chain process, but it's not necessary to call it directly
 	 * @memberof ajs.ui.moogallery.prototype
 	 * @method
-	 * @param {Object} img_opt the image options object to show
+	 * @param {Object} item_opt the image options object to show
 	 * @return void
 	 */		 
 	renderLightboxContainer: function() {
 
 		// image to show
-		img_opt = this.images_opt[this.index];
-		var img = this.images[this.index];
+		item_opt = this.items_opt[this.index];
+		var item = this.items[this.index];
 
-		var img_info = new Element('div.moogallery_lightbox_info');
-		var img_info_title = new Element('p.moogallery_lightbox_info_title').set('html', img_opt.title);
+		var item_info = new Element('div.moogallery_lightbox_info');
+		var item_info_title = new Element('p.moogallery_lightbox_info_title').set('html', item_opt.title);
 
-		var img_info_description_text = typeOf(img_opt.description) === 'null' ? '' : img_opt.description;
-		var img_info_description = new Element('div.moogallery_lightbox_info_description').set('html', img_info_description_text);
+		var item_info_description_text = typeOf(item_opt.description) === 'null' ? '' : item_opt.description;
+		var item_info_description = new Element('div.moogallery_lightbox_info_description').set('html', item_info_description_text);
 
-		var img_info_credits_text = typeOf(img_opt.credits) === 'null' ? '' : img_opt.credits;
-		var img_info_credits = new Element('p.moogallery_lightbox_info_credits').set('html', img_info_credits_text);
+		var item_info_credits_text = typeOf(item_opt.credits) === 'null' ? '' : item_opt.credits;
+		var item_info_credits = new Element('p.moogallery_lightbox_info_credits').set('html', item_info_credits_text);
 
-		img_info.adopt(img_info_title, img_info_description, img_info_credits);
+		item_info.adopt(item_info_title, item_info_description, item_info_credits);
 
-		var navigation = this.renderNavigation(img_opt);
+		var navigation = this.renderNavigation(item_opt);
 
 		// contents hidden with opacity
 		var lightbox_subcontainer = new Element('div').setStyle('opacity', '0').inject(this.lightbox_container);
 
-		lightbox_subcontainer.adopt(img, navigation, img_info);
+		lightbox_subcontainer.adopt(item, navigation, item_info);
 
 		// dimensions
 		// padding and borders increase the width of the element
 		var plus_dim = this.lightbox_container.getStyle('padding').toInt()*2 + this.lightbox_container.getStyle('border-width').toInt() * 2;
-		var final_width = img.getCoordinates().width;
+		var final_width = item.getCoordinates().width;
 		
 		// first image opened
 		if(this.lightbox_container.getStyle('visibility') == 'hidden') {
@@ -343,7 +423,7 @@ var moogallery = new Class({
 			'width': final_width, 
 			'left': this.lightbox_container.getStyle('left').toInt() - (final_width + plus_dim - current_width)/2 
 		}).chain(function() {
-			lightbox_subcontainer.adopt(navigation, img_info);
+			lightbox_subcontainer.adopt(navigation, item_info);
 			var final_height = lightbox_subcontainer.getCoordinates().height;
 			lc_animation.start({
 				'height': final_height,
@@ -351,8 +431,8 @@ var moogallery = new Class({
 			}).chain(function() {
 				lightbox_subcontainer.fade('in');	
 			});
-		}.bind(this));
-		
+		}.bind(this));	
+
 		// click outside to close
 		this.overlay.addEvent('click', function(e) {
 			var event = new DOMEvent(e);
@@ -362,6 +442,9 @@ var moogallery = new Class({
 				myfx.start(0.9, 0).chain(function() {
 					this.overlay.dispose();
 				}.bind(this));
+				if(this.mobile && Browser.Features.Touch) {
+					document.body.removeEvent('swipe');
+				}
 			}
 		}.bind(this));
 
@@ -370,38 +453,44 @@ var moogallery = new Class({
 	 * @summary Renders the navigation controllers to surf through images in the lightbox widget
 	 * @memberof ajs.ui.moogallery.prototype
 	 * @method
-	 * @param {Object} img_opt the image options object to show 
+	 * @param {Object} item_opt the image options object to show 
 	 * @protected
 	 * @return the lightbox navigation controllers
 	 */		 
-	renderNavigation: function(img_opt) {
+	renderNavigation: function(item_opt) {
 
-		var index = this.images_opt.indexOf(img_opt);
+		var index = this.items_opt.indexOf(item_opt);
 		var nav = new Element('div.moogallery_nav');
 
-		var nav_info_text = (index + 1) + '/' + this.images_opt.length;
+		this.arrow_next = new Element('div', {'class': 'arrow arrow_next'}).setStyle('opacity', '0');
+		this.arrow_prev = new Element('div', {'class': 'arrow arrow_prev'}).setStyle('opacity', '0');
+		var arrows = new Element('div.nav_arrows').adopt(this.arrow_next, this.arrow_prev);
+
+		var nav_info_text = (index + 1) + '/' + this.items_opt.length;
 		var nav_info = new Element('div.moogallery_nav_info').set('text', nav_info_text);
 
-		nav.adopt(nav_info);
+		nav.grab(arrows);
 
 		// bullets
 		if(this.options.show_bullets) {
 			var nav_table = new Element('table.moogallery_nav_table');
 			var tr = new Element('tr').inject(nav_table);
-			this.images.each(function(img, i) {
+			this.items.each(function(item, i) {
 				var td = new Element('td').inject(tr);
 				var bullet = new Element('div.moogallery_nav_bullet').inject(td);
 				if(i == index) bullet.addClass('bullet_selected');
 				else {
 					bullet.addEvent('click', function(e) {
 						e.stopPropagation();
-						this.changeImage(i);
+						this.changeItem(i);
 					}.bind(this))
 				}
 			}.bind(this));
 
 			nav_table.inject(nav);	
 		}
+
+		nav.grab(nav_info);
 
 		return nav;
 
@@ -413,7 +502,7 @@ var moogallery = new Class({
 	 * @param {Number} index the index of the image to show
 	 * @return void
 	 */		 
-	changeImage: function(index) {
+	changeItem: function(index) {
 		this.index = index;
 		var myfx = new Fx.Tween(this.lightbox_container.getChildren('div')[0], {property: 'opacity', duration: 'short'});
 		myfx.start(1, 0).chain(function() {
