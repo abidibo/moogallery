@@ -1,3 +1,6 @@
+body {
+	-webkit-tap-highlight-color: transparent;
+}
 .moogallery tr {
 	vertical-align: middle;
 }
@@ -20,6 +23,7 @@
 	color: #fff;
 	padding: 20px;
 	border: 1px solid #666;
+	-webkit-user-select: none;
 }
 .moogallery_lightbox_info {
 	text-align: left;
@@ -34,7 +38,6 @@
 	font-style: italic;
 }
 .moogallery_nav {
-	margin-top: 10px;
 	position: relative;
 }
 .moogallery_nav_table {
@@ -44,8 +47,7 @@
 	padding: 5px;
 }
 .moogallery_nav_info {
-	position: absolute;
-	right: 0;
+	text-align: center;
 }
 .moogallery_nav_bullet {
 	width: 8px;
@@ -75,4 +77,23 @@
 }
 *[class^=moogallery_lightbox_info_] a:hover {
 	color: #fff;
+}
+
+.moogallery_lightbox_container .nav_arrows {
+	margin: 5px 0;
+}
+
+.moogallery_lightbox_container .arrow {
+	width: 0px;
+	height: 0px;
+	border-top: 10px solid transparent;
+	border-bottom: 10px solid transparent;
+}
+.moogallery_lightbox_container .arrow_next {
+	border-left: 10px solid #fff;
+	float: right;
+}	
+.moogallery_lightbox_container .arrow_prev {
+	border-right: 10px solid #fff;
+	float: left;
 }
