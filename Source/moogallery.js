@@ -165,7 +165,7 @@ var moogallery = new Class({
 	 */		 
 	renderItem: function(item_opt) {
 
-		var thumb = new Image();
+		var thumb = new Element('img');
 		thumb.src = item_opt.thumb;
 
 		this.setTip(thumb, item_opt);
@@ -174,7 +174,7 @@ var moogallery = new Class({
 		this.thumbs.push(thumb);
 
 		if(typeOf(item_opt.img) != 'null') {
-			var item = new Image();
+			var item = new Element('img');
 			item.src = item_opt.img;
 		}
 		else if(typeOf(item_opt.youtube) != 'null' || typeOf(item_opt.vimeo) != 'null') {
