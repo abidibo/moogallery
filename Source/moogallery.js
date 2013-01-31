@@ -166,6 +166,19 @@ var moogallery = new Class({
 	renderItem: function(item_opt) {
 
 		var thumb = new Element('img');
+
+		thumb.onload = function() {
+			var td = new Element('td');
+			td.inject(this.tr);
+			thumb.inject(td);
+			if(this.table.getCoordinates().width >= this.container_width) {
+				td.dispose();
+				this.tr = new Element('tr').inject(this.table);
+				td.inject(this.tr);
+			}
+			this.fireEvent('item_rendered', this.items_opt.indexOf(item_opt)+1)
+		}.bind(this);
+
 		thumb.src = item_opt.thumb;
 
 		this.setTip(thumb, item_opt);
@@ -198,18 +211,6 @@ var moogallery = new Class({
 		}
 
 		this.items.push(item);
-
-		thumb.onload = function() {
-			var td = new Element('td');
-			td.inject(this.tr);
-			thumb.inject(td);
-			if(this.table.getCoordinates().width >= this.container_width) {
-				td.dispose();
-				this.tr = new Element('tr').inject(this.table);
-				td.inject(this.tr);
-			}
-			this.fireEvent('item_rendered', this.items_opt.indexOf(item_opt)+1)
-		}.bind(this);
 		
 	}.protect(),
 	/**
