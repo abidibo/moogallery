@@ -51,7 +51,7 @@ var moogallery = new Class({
 	 * @param {Function} [options.onComplete=function(){}] A callback to be called when the rendering of the thumb ended
 	 * @param {Boolean} [options.show_bullets=true] Whether or not to show bullets in lightbox widget
 	 * @example
-	 * 	var mt = new ajs.ui.moogallery('mycontainer', [
+	 * 	var mt = new moogallery('mycontainer', [
 	 *          {
 	 *              thumb: 'http://my/thumb/path', 
 	 *              img: 'http://my/img/path', 
@@ -157,7 +157,7 @@ var moogallery = new Class({
 	},
 	/**
 	 * @summary Inserts an image in the table creating a new cell and changing row if necessary
-	 * @memberof ajs.ui.moogallery.prototype
+	 * @memberof moogallery.prototype
 	 * @method
 	 * @param {Object} item_opt the image options object to show
 	 * @protected
@@ -215,7 +215,7 @@ var moogallery = new Class({
 	}.protect(),
 	/**
 	 * @summary Sets a tooltip tied to the thumb and displayed on mouseover
-	 * @memberof ajs.ui.moogallery.prototype
+	 * @memberof moogallery.prototype
 	 * @method
 	 * @param {Element} thumb the thumb image element
 	 * @param {Object} item_opt the image options object to show
@@ -245,7 +245,7 @@ var moogallery = new Class({
 	}.protect(),
 	/**
 	 * @summary Sets the thumb click event to render the lightbox navigation
-	 * @memberof ajs.ui.moogallery.prototype
+	 * @memberof moogallery.prototype
 	 * @method
 	 * @param {Element} thumb the thumb image element
 	 * @param {Object} item_opt the image options object to show
@@ -261,7 +261,7 @@ var moogallery = new Class({
 	}.protect(),
 	/**
 	 * @summary Renders the overlay and calls the function to execute after
-	 * @memberof ajs.ui.moogallery.prototype
+	 * @memberof moogallery.prototype
 	 * @method
 	 * @param {Function} chain_callback the function to call when overlay opacity animation ends
 	 * @protected
@@ -289,7 +289,7 @@ var moogallery = new Class({
 	/**
 	 * @summary Renders the lightbox widget
 	 * @description This methos is public since has to be called in a chain process, but it's not necessary to call it directly
-	 * @memberof ajs.ui.moogallery.prototype
+	 * @memberof moogallery.prototype
 	 * @method
 	 * @param {Object} item_opt the image options object to show
 	 * @return void
@@ -368,7 +368,7 @@ var moogallery = new Class({
 	/**
 	 * @summary Renders the lightbox widget container (image, title, description, credits, navigation)
 	 * @description This methos is public since has to be called in a chain process, but it's not necessary to call it directly
-	 * @memberof ajs.ui.moogallery.prototype
+	 * @memberof moogallery.prototype
 	 * @method
 	 * @param {Object} item_opt the image options object to show
 	 * @return void
@@ -452,7 +452,7 @@ var moogallery = new Class({
 	},
 	/**
 	 * @summary Renders the navigation controllers to surf through images in the lightbox widget
-	 * @memberof ajs.ui.moogallery.prototype
+	 * @memberof moogallery.prototype
 	 * @method
 	 * @param {Object} item_opt the image options object to show 
 	 * @protected
@@ -498,7 +498,7 @@ var moogallery = new Class({
 	}.protect(),
 	/**
 	 * @summary Changes the image displayed in the lightbox widget
-	 * @memberof ajs.ui.moogallery.prototype
+	 * @memberof moogallery.prototype
 	 * @method
 	 * @param {Number} index the index of the image to show
 	 * @return void
