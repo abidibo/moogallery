@@ -89,6 +89,9 @@ var moogallery = new Class({
 
 		this.table = new Element('table', {'class': 'moogallery'}).inject(this.container);
 		this.tr = new Element('tr').inject(this.table);
+    this.first_row = true;
+    this.cols = 0;
+    this.actual_col = 1;
 		this.tr_width = 0;
 		this.container_width = this.container.getCoordinates().width;
 
@@ -169,14 +172,30 @@ var moogallery = new Class({
 
 		thumb.onload = function() {
 			var td = new Element('td');
-			td.inject(this.tr);
 			thumb.inject(td);
-			if(this.table.getCoordinates().width >= this.container_width) {
-				td.dispose();
-				this.tr = new Element('tr').inject(this.table);
-				td.inject(this.tr);
-			}
-			this.fireEvent('item_rendered', this.items_opt.indexOf(item_opt)+1)
+      if(!this.first_row) {
+        if(this.actual_col >= this.cols) {
+          this.tr = new Element('tr').inject(this.table);
+          this.actual_col = 1;
+        }
+        else {
+          this.actual_col++;
+        }
+        td.inject(this.tr);
+      }
+      else {
+			  td.inject(this.tr);
+        if(this.table.getCoordinates().width >= this.container_width) {
+          td.dispose();
+          this.tr = new Element('tr').inject(this.table);
+          td.inject(this.tr);
+          this.first_row = false;
+        }
+        else {
+          this.cols++;
+        }
+      }
+      this.fireEvent('item_rendered', this.items_opt.indexOf(item_opt)+1)
 		}.bind(this);
 
 		thumb.src = item_opt.thumb;
