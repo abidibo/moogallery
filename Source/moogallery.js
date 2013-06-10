@@ -113,7 +113,15 @@ var moogallery = new Class({
 	getMaxZindex: function() {
 		var max_z = 0;
 		$$('body *').each(function(el) {
-			if(el.getStyle('z-index').toInt()) max_z = Math.max(max_z, el.getStyle('z-index').toInt());
+      try{
+        // second condition due to automatically inserted skype icons by fucking IE
+        if(el.getStyle('z-index').toInt() && el.getStyle('z-index').toInt() != 2147483647) {
+          max_z = Math.max(max_z, el.getStyle('z-index').toInt());
+        }
+      }
+      catch(err) {
+        // IE can't get z-index of some elements (span, img)
+      }
 		});
 
 		return max_z;
@@ -127,35 +135,16 @@ var moogallery = new Class({
 	 */
 	getViewport: function() {
 	
-		var width, height, left, top, cX, cY;
+    var document_coords = document.getCoordinates();
+    var document_scroll = document.getScroll();
+    var width = document_coords.width;
+    var height = document_coords.height;
+    var left = document_scroll.x;
+    var top = document_scroll.y;
+    var cX = document_coords.width / 2 + document_scroll.x;
+    var cY = document_coords.height / 2 + document_scroll.y;
 
-		// the more standards compliant browsers (mozilla/netscape/opera/IE7) use window.innerWidth and window.innerHeight
-		if (typeof window.innerWidth != 'undefined') {
-			width = window.innerWidth,
-			      height = window.innerHeight
-		}
-		// IE6 in standards compliant mode (i.e. with a valid doctype as the first line in the document)
-		else if (typeof document.documentElement != 'undefined' && typeof document.documentElement.clientWidth !='undefined' && document.documentElement.clientWidth != 0) {
-			width = document.documentElement.clientWidth,
-			      height = document.documentElement.clientHeight
-		}
-	
-		top = typeof self.pageYOffset != 'undefined' 
-			? self.pageYOffset 
-			: (document.documentElement && document.documentElement.scrollTop)
-			? document.documentElement.scrollTop
-			: document.body.clientHeight;
-
-		left = typeof self.pageXOffset != 'undefined' 
-			? self.pageXOffset 
-			: (document.documentElement && document.documentElement.scrollTop)
-			? document.documentElement.scrollLeft
-			: document.body.clientWidth;
-	
-		cX = left + width/2;
-		cY = top + height/2;
-
-		return {'width':width, 'height':height, 'left':left, 'top':top, 'cX':cX, 'cY':cY};
+    return {'width': width, 'height': height, 'left': left, 'top': top, 'cX': cX, 'cY': cY};
 
 	},
 	/**
