@@ -51,7 +51,7 @@ var moogallery = new Class({
 	 * @param {Function} [options.onComplete=function(){}] A callback to be called when the rendering of the thumb ended
 	 * @param {Boolean} [options.show_bullets=true] Whether or not to show bullets in lightbox widget
 	 * @example
-	 * 	var mt = new ajs.ui.moogallery('mycontainer', [
+	 * 	var mt = new moogallery('mycontainer', [
 	 *          {
 	 *              thumb: 'http://my/thumb/path', 
 	 *              img: 'http://my/img/path', 
@@ -113,7 +113,15 @@ var moogallery = new Class({
 	getMaxZindex: function() {
 		var max_z = 0;
 		$$('body *').each(function(el) {
-			if(el.getStyle('z-index').toInt()) max_z = Math.max(max_z, el.getStyle('z-index').toInt());
+      try{
+        // second condition due to automatically inserted skype icons by fucking IE
+        if(el.getStyle('z-index').toInt() && el.getStyle('z-index').toInt() != 2147483647) {
+          max_z = Math.max(max_z, el.getStyle('z-index').toInt());
+        }
+      }
+      catch(err) {
+        // IE can't get z-index of some elements (span, img)
+      }
 		});
 
 		return max_z;
@@ -127,40 +135,21 @@ var moogallery = new Class({
 	 */
 	getViewport: function() {
 	
-		var width, height, left, top, cX, cY;
+    var document_coords = document.getCoordinates();
+    var document_scroll = document.getScroll();
+    var width = document_coords.width;
+    var height = document_coords.height;
+    var left = document_scroll.x;
+    var top = document_scroll.y;
+    var cX = document_coords.width / 2 + document_scroll.x;
+    var cY = document_coords.height / 2 + document_scroll.y;
 
-		// the more standards compliant browsers (mozilla/netscape/opera/IE7) use window.innerWidth and window.innerHeight
-		if (typeof window.innerWidth != 'undefined') {
-			width = window.innerWidth,
-			      height = window.innerHeight
-		}
-		// IE6 in standards compliant mode (i.e. with a valid doctype as the first line in the document)
-		else if (typeof document.documentElement != 'undefined' && typeof document.documentElement.clientWidth !='undefined' && document.documentElement.clientWidth != 0) {
-			width = document.documentElement.clientWidth,
-			      height = document.documentElement.clientHeight
-		}
-	
-		top = typeof self.pageYOffset != 'undefined' 
-			? self.pageYOffset 
-			: (document.documentElement && document.documentElement.scrollTop)
-			? document.documentElement.scrollTop
-			: document.body.clientHeight;
-
-		left = typeof self.pageXOffset != 'undefined' 
-			? self.pageXOffset 
-			: (document.documentElement && document.documentElement.scrollTop)
-			? document.documentElement.scrollLeft
-			: document.body.clientWidth;
-	
-		cX = left + width/2;
-		cY = top + height/2;
-
-		return {'width':width, 'height':height, 'left':left, 'top':top, 'cX':cX, 'cY':cY};
+    return {'width': width, 'height': height, 'left': left, 'top': top, 'cX': cX, 'cY': cY};
 
 	},
 	/**
 	 * @summary Inserts an image in the table creating a new cell and changing row if necessary
-	 * @memberof ajs.ui.moogallery.prototype
+	 * @memberof moogallery.prototype
 	 * @method
 	 * @param {Object} item_opt the image options object to show
 	 * @protected
@@ -234,7 +223,7 @@ var moogallery = new Class({
 	}.protect(),
 	/**
 	 * @summary Sets a tooltip tied to the thumb and displayed on mouseover
-	 * @memberof ajs.ui.moogallery.prototype
+	 * @memberof moogallery.prototype
 	 * @method
 	 * @param {Element} thumb the thumb image element
 	 * @param {Object} item_opt the image options object to show
@@ -264,7 +253,7 @@ var moogallery = new Class({
 	}.protect(),
 	/**
 	 * @summary Sets the thumb click event to render the lightbox navigation
-	 * @memberof ajs.ui.moogallery.prototype
+	 * @memberof moogallery.prototype
 	 * @method
 	 * @param {Element} thumb the thumb image element
 	 * @param {Object} item_opt the image options object to show
@@ -280,7 +269,7 @@ var moogallery = new Class({
 	}.protect(),
 	/**
 	 * @summary Renders the overlay and calls the function to execute after
-	 * @memberof ajs.ui.moogallery.prototype
+	 * @memberof moogallery.prototype
 	 * @method
 	 * @param {Function} chain_callback the function to call when overlay opacity animation ends
 	 * @protected
@@ -308,7 +297,7 @@ var moogallery = new Class({
 	/**
 	 * @summary Renders the lightbox widget
 	 * @description This methos is public since has to be called in a chain process, but it's not necessary to call it directly
-	 * @memberof ajs.ui.moogallery.prototype
+	 * @memberof moogallery.prototype
 	 * @method
 	 * @param {Object} item_opt the image options object to show
 	 * @return void
@@ -387,7 +376,7 @@ var moogallery = new Class({
 	/**
 	 * @summary Renders the lightbox widget container (image, title, description, credits, navigation)
 	 * @description This methos is public since has to be called in a chain process, but it's not necessary to call it directly
-	 * @memberof ajs.ui.moogallery.prototype
+	 * @memberof moogallery.prototype
 	 * @method
 	 * @param {Object} item_opt the image options object to show
 	 * @return void
@@ -471,7 +460,7 @@ var moogallery = new Class({
 	},
 	/**
 	 * @summary Renders the navigation controllers to surf through images in the lightbox widget
-	 * @memberof ajs.ui.moogallery.prototype
+	 * @memberof moogallery.prototype
 	 * @method
 	 * @param {Object} item_opt the image options object to show 
 	 * @protected
@@ -517,7 +506,7 @@ var moogallery = new Class({
 	}.protect(),
 	/**
 	 * @summary Changes the image displayed in the lightbox widget
-	 * @memberof ajs.ui.moogallery.prototype
+	 * @memberof moogallery.prototype
 	 * @method
 	 * @param {Number} index the index of the image to show
 	 * @return void
