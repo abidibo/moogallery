@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>moogallery demo</title>
+    <meta charset="utf8" />
+    <script src="//ajax.googleapis.com/ajax/libs/mootools/1.4.5/mootools-yui-compressed.js"></script>
+    <script type="text/javascript" src="../Source/moogallery.js"></script>
+    <link type="text/css" rel="stylesheet" href="../Style/moogallery.css" />
+  </head>
+  <body>
+    <h1>moogallery demo</h1>
+    <p>Gallery charged in the following bordered div at page load</p>
+    <div id="gallery" style="border: 1px solid #000; width: 400px;"></div>
+    <script type="text/javascript">
+
+      var mygallery = new moogallery('gallery', 
+        [
+          {
+            thumb: 'img/th_500x700.jpeg',
+            img: 'img/500x700.jpeg',
+            title: 'Image 1',
+            description: 'Lorem ipsum color sin amet',
+            credits: '<a href="http://lorempixel.com">http://lorempixel.com</a>'
+          },
+          {
+            thumb: 'img/th_screen_sv.png',
+            youtube: 'mDZuNM3HmU4',
+            video_width: 640,
+            video_height: 480,
+            title: 'Steve Vai - "For The Love Of God" - G3 1996 ',
+            description: 'Praesent neque est, viverra ac elementum sed, ultricies et risus',
+            credits: '<a href="http://www.youtube.com/watch?v=mDZuNM3HmU4">youtube</a>'
+          },
+          {
+            thumb: 'img/th_800x600.jpeg',
+            img: 'img/800x600.jpeg',
+            title: 'Image 2',
+            description: 'Amendas ipsum docet sin amet',
+            credits: '<a href="http://lorempixel.com">http://lorempixel.com</a>'
+          },
+          {
+            thumb: 'img/th_780x580.jpeg',
+            img: 'img/780x580.jpeg',
+            title: 'Image 3',
+            description: 'Donec volutpat nibh molestie libero accumsan',
+            credits: '<a href="http://lorempixel.com">http://lorempixel.com</a>'
+          },
+          {
+            thumb: 'img/th_700x700.jpeg',
+            img: 'img/700x700.jpeg',
+            title: 'Image 4',
+            description: 'Sed pretium pulvinar massa, id ultricies lectus porta eget',
+            credits: '<a href="http://lorempixel.com">http://lorempixel.com</a>'
+          },
+          {
+            thumb: 'img/th_800x600-2.jpeg',
+            img: 'img/800x600-2.jpeg',
+            title: 'Image 5',
+            description: 'Donec ultricies dolor porta metus porttitor',
+            credits: '<a href="http://lorempixel.com">http://lorempixel.com</a>'
+          },
+          {
+            thumb: 'img/th_780x580-3.jpeg',
+            img: 'img/780x580-3.jpeg',
+            title: 'Image 6',
+            description: 'Integer non lacus nec felis sodales euismod',
+            credits: '<a href="http://lorempixel.com">http://lorempixel.com</a>'
+          },
+          {
+            thumb: 'img/th_500x700-2.jpeg',
+            img: 'img/500x700-2.jpeg',
+            title: 'Image 7',
+            description: 'Morbi elementum nunc et elementum ultriceès',
+            credits: '<a href="http://lorempixel.com">http://lorempixel.com</a>'
+          },
+          {
+            thumb: 'img/th_700x700-2.jpeg',
+            img: 'img/700x700-2.jpeg',
+            title: 'Image 8',
+            description: 'Etiam mollis elementum lacus sit amet vulputate',
+            credits: '<a href="http://lorempixel.com">http://lorempixel.com</a>'
+          },
+          {
+            thumb: 'img/th_800x600-3.jpeg',
+            img: 'img/800x600-3.jpeg',
+            title: 'Image 9',
+            description: 'Cras commodo felis justo',
+            credits: '<a href="http://lorempixel.com">http://lorempixel.com</a>'
+          },
+          {
+            thumb: 'img/th_700x700-3.jpeg',
+            img: 'img/700x700-3.jpeg',
+            title: 'Image 10',
+            description: 'Suspendisse est velit, scelerisque in viverra eget',
+            credits: '<a href="http://lorempixel.com">http://lorempixel.com</a>'
+          },
+          {
+            thumb: 'img/th_screen_jb.png',
+            youtube: 'XjO4IenAyUw',
+            video_width: 640,
+            video_height: 480,
+            title: 'Jeff Buckley - Grace (BBC Late Show) ',
+            description: 'Duis fermentum non arcu id scelerisque',
+            credits: '<a href="http://www.youtube.com/watch?v=XjO4IenAyUw">youtube</a>'
+          },
+          {
+            thumb: 'img/th_500x700-3.jpeg',
+            img: 'img/500x700-3.jpeg',
+            title: 'Image 11',
+            description: 'Aliquam eget arcu id arcu placerat semper',
+            credits: '<a href="http://lorempixel.com">http://lorempixel.com</a>'
+          },
+        ],
+        {
+          show_bullets: true,
+          support_mobile: false,
+          onComplete: function() { alert('rendering complete'); }
+        }
+      );
+    </script>
+  </body>
+</html>
