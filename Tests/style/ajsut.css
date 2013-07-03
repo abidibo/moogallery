@@ -1,0 +1,44 @@
+#results {
+  list-style-type: none;
+  padding-left: 0;
+  margin-left: 0;
+  font-family: Tahoma;
+}
+
+#results > li {
+  border: 1px solid #333;
+  margin: 10px;
+  padding: 10px;
+}
+
+#results li {
+  margin: 10px 0;
+}
+
+#results > li.failed {
+  background: #ff82a0;
+}
+
+#results > li.passed {
+  background: #82ffca;
+}
+
+li.passed {
+}
+li.passed:before {
+  content: '[OK]';
+  display: block;
+  float: right;
+  color: #626200;
+}
+
+li.failed {
+  color: #cc0000;
+}
+li.failed:before {
+  content: '[failed]';
+  display: block;
+  float: right;
+  color: #cc0000;
+}
+

@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Tests</title>
+    <meta charset="utf8" />
+    <script type="text/javascript" src="ajsut.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/mootools/1.4.5/mootools-yui-compressed.js"></script>
+    <script type="text/javascript" src="../Source/moogallery.js"></script>
+    <link type="text/css" rel="stylesheet" href="style/ajsut.css" />
+    <link type="text/css" rel="stylesheet" href="../Style/moogallery.css" />
+  </head>
+  <body>
+
+    <h1>moogallery test page</h1>
+
+    <p>Gallery charged in the following bordered div at page load</p>
+    <div id="gallery" style="border: 1px solid #000; width: 400px;"></div>
+    <script type="text/javascript">
+
+      ajsut.assert(moogallery, 'moogallery is defined');
+
+      var mygallery = new moogallery('gallery', 
+        [
+          {
+            thumb: '../Demo/img/th_500x700.jpeg',
+            img: '../Demo/img/500x700.jpeg',
+            title: 'Image 1',
+            description: 'Lorem ipsum color sin amet',
+            credits: '<a href="http://lorempixel.com">http://lorempixel.com</a>'
+          },
+          {
+            thumb: '../Demo/img/th_screen_sv.png',
+            youtube: 'mDZuNM3HmU4',
+            video_width: 640,
+            video_height: 480,
+            title: 'Steve Vai - "For The Love Of God" - G3 1996 ',
+            description: 'Praesent neque est, viverra ac elementum sed, ultricies et risus',
+            credits: '<a href="http://www.youtube.com/watch?v=mDZuNM3HmU4">youtube</a>'
+          },
+          {
+            thumb: '../Demo/img/th_800x600.jpeg',
+            img: '../Demo/img/800x600.jpeg',
+            title: 'Image 2',
+            description: 'Amendas ipsum docet sin amet',
+            credits: '<a href="http://lorempixel.com">http://lorempixel.com</a>'
+          },
+          {
+            thumb: '../Demo/img/th_780x580.jpeg',
+            img: '../Demo/img/780x580.jpeg',
+            title: 'Image 3',
+            description: 'Donec volutpat nibh molestie libero accumsan',
+            credits: '<a href="http://lorempixel.com">http://lorempixel.com</a>'
+          },
+          {
+            thumb: '../Demo/img/th_700x700.jpeg',
+            img: '../Demo/img/700x700.jpeg',
+            title: 'Image 4',
+            description: 'Sed pretium pulvinar massa, id ultricies lectus porta eget',
+            credits: '<a href="http://lorempixel.com">http://lorempixel.com</a>'
+          },
+          {
+            thumb: '../Demo/img/th_800x600-2.jpeg',
+            img: '../Demo/img/800x600-2.jpeg',
+            title: 'Image 5',
+            description: 'Donec ultricies dolor porta metus porttitor',
+            credits: '<a href="http://lorempixel.com">http://lorempixel.com</a>'
+          },
+          {
+            thumb: '../Demo/img/th_780x580-3.jpeg',
+            img: 'img/780x580-3.jpeg',
+            title: 'Image 6',
+            description: 'Integer non lacus nec felis sodales euismod',
+            credits: '<a href="http://lorempixel.com">http://lorempixel.com</a>'
+          },
+          {
+            thumb: '../Demo/img/th_500x700-2.jpeg',
+            img: 'img/500x700-2.jpeg',
+            title: 'Image 7',
+            description: 'Morbi elementum nunc et elementum ultriceès',
+            credits: '<a href="http://lorempixel.com">http://lorempixel.com</a>'
+          },
+          {
+            thumb: '../Demo/img/th_700x700-2.jpeg',
+            img: '../Demo/img/700x700-2.jpeg',
+            title: 'Image 8',
+            description: 'Etiam mollis elementum lacus sit amet vulputate',
+            credits: '<a href="http://lorempixel.com">http://lorempixel.com</a>'
+          },
+          {
+            thumb: '../Demo/img/th_800x600-3.jpeg',
+            img: '../Demo/img/800x600-3.jpeg',
+            title: 'Image 9',
+            description: 'Cras commodo felis justo',
+            credits: '<a href="http://lorempixel.com">http://lorempixel.com</a>'
+          },
+          {
+            thumb: '../Demo/img/th_700x700-3.jpeg',
+            img: '../Demo/img/700x700-3.jpeg',
+            title: 'Image 10',
+            description: 'Suspendisse est velit, scelerisque in viverra eget',
+            credits: '<a href="http://lorempixel.com">http://lorempixel.com</a>'
+          },
+          {
+            thumb: '../Demo/img/th_screen_jb.png',
+            youtube: 'XjO4IenAyUw',
+            video_width: 640,
+            video_height: 480,
+            title: 'Jeff Buckley - Grace (BBC Late Show) ',
+            description: 'Duis fermentum non arcu id scelerisque',
+            credits: '<a href="http://www.youtube.com/watch?v=XjO4IenAyUw">youtube</a>'
+          },
+          {
+            thumb: '../Demo/img/th_500x700-3.jpeg',
+            img: '../Demo/img/500x700-3.jpeg',
+            title: 'Image 11',
+            description: 'Aliquam eget arcu id arcu placerat semper',
+            credits: '<a href="http://lorempixel.com">http://lorempixel.com</a>'
+          },
+        ],
+        {
+          show_bullets: true,
+          support_mobile: false,
+          onComplete: completeTest
+        }
+      );
+
+      function completeTest() {
+        // rendering finished
+        ajsut.assert(true, 'moogallery has finished rendering the gallery');
+
+        // check table size against container size
+        var c_size = document.id('gallery').getCoordinates();
+        var t_size = document.id('gallery').getChildren('table')[0].getCoordinates();
+
+        ajsut.assert(t_size.width <= c_size.width, 'moogallery table with is equal or minor than container width');
+
+        maxz_prev = mygallery.getMaxZindex();
+        $$('img[src$=th_800x600-3.jpeg]')[0].fireEvent('click');
+        overlay_z = $$('.moogallery_overlay')[0].getStyle('z-index');
+
+        ajsut.test('Some z-index checks', function() {
+          ajsut.pause();
+          setTimeout(function() {
+            var mg_container_z = $$('.moogallery_lightbox_container')[0].getStyle('z-index');
+            ajsut.assert(overlay_z >= maxz_prev, 'moogallery overlay stands over every other item in the page');
+            ajsut.assert(mg_container_z >= overlay_z, 'moogallery lightbox container stands over the overlay');
+            ajsut.resume();
+          }, 2000);
+        })
+
+        ajsut.test('Lightbox checks', function() {
+            ajsut.pause();
+            var title = $$('.moogallery_lightbox_info_title')[0].get('text');
+            var info = $$('.moogallery_nav_info')[0].get('text');
+            ajsut.assert(title == 'Image 9' && info == '10/13', 'first loaded image: Image 9, 11/13');
+            mygallery.changeItem(mygallery.index + 1);
+            setTimeout(function() {
+              var info = $$('.moogallery_nav_info')[0].get('text');
+              var evObj = document.createEvent('MouseEvents');
+              evObj.initMouseEvent( 'click', true, true, window, 1, 1, 1, 7, 220, false, false, true, false, 0, null );
+              //mygallery.overlay.fireEvent('click', evObj);
+              ajsut.assert(info == '11/13', 'next item 11/13 changed succesfully');
+              $$('.moogallery_nav_bullet')[0].fireEvent('click', evObj);
+            }, 2000);
+            setTimeout(function() {
+              var info = $$('.moogallery_nav_info')[0].get('text');
+              var evObj = document.createEvent('MouseEvents');
+              evObj.initMouseEvent( 'click', true, true, window, 1, 1, 1, 7, 220, false, false, true, false, 0, null );
+              mygallery.overlay.fireEvent('click', evObj);
+              ajsut.assert(info == '1/13', 'click on first bullet, item 1/13 changed succesfully');
+              ajsut.resume();
+            }, 4000);
+        })
+
+        ajsut.test('After closing lightbox effect', function() {
+            ajsut.pause();
+            setTimeout(function() {
+              ajsut.assert($$('.moogallery_lightbox_container').length == 0, 'lightbox container succesfully disposed');
+              ajsut.assert($$('.moogallery_overlay').length == 0, 'overlay succesfully disposed');
+            }, 2000);
+        })
+      }
+    </script>
+  </body>
+</html>
